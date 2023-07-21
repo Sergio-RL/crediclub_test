@@ -10,11 +10,11 @@ router.post("/file", upload.single("photo"), (req, res) => {
   res.send({
     emotions: [
       {
-        emotion: "Triste",
+        emotion: "Avergonzado",
         percentage: 88,
       },
       {
-        emotion: "Enojado",
+        emotion: "Sorprendido",
         percentage: 77,
       },
       {

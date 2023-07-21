@@ -1,38 +1,32 @@
 <template>
   <q-page class="content row justify-center">
     <div class="row justify-center" style="width: 70vw">
-      <div class="col-12 col-md-6">
-        <div class="column items-center q-mt-xl" @click="onClickImg">
-          <img v-if="!!photo" class="mainPhoto" :src="photo" />
-          <img v-else class="mainPhoto" src="../assets/no_image.png" />
-          <p class="text-center text-white">
-            (Haz click en la foto <br />
-            para escanear)
-          </p>
-        </div>
-
+      <div class="col-12 col-md-5">
+        <photo-container
+          :photo="photo"
+          :on-click-img="onClickImg"
+        ></photo-container>
         <input v-show="false" type="file" @change="handlePhoto" />
       </div>
 
-      <div class="column col-12 col-md-6 items-center">
-        <h3 class="col-12 text-center text-white text-weight-light">
+      <div class="column col-12 col-md-7 items-center">
+        <h3 class="text-center text-white text-weight-light">
           Emociones detectadas
         </h3>
-        <div class="col-10">
-          <emotion-details
-            v-for="({ emotion, percentage }, i) in detectedEmotions"
-            :key="i"
-            :emotion="emotion"
-            :percentage="percentage"
-            class="q-mb-xl"
-          ></emotion-details>
-        </div>
+        <emotion-details
+          v-for="({ emotion, percentage }, i) in detectedEmotions"
+          :key="i"
+          :emotion="emotion"
+          :percentage="percentage"
+          class="q-mb-xl"
+        ></emotion-details>
       </div>
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import { useQuasar } from 'quasar';
 import { ref } from 'vue';
 import { AxiosResponse } from 'axios';
 import { sortBy } from 'lodash';
@@ -40,8 +34,10 @@ import { sortBy } from 'lodash';
 import EmotionDetails, {
   EmotionDetailsProps,
 } from 'components/EmotionDetails.vue';
+import PhotoContainer from 'components/PhotoContainer.vue';
 import { api } from 'src/boot/axios';
 
+const $q = useQuasar();
 const photo = ref<string>('');
 const detectedEmotions = ref<EmotionDetailsProps[]>([]);
 
@@ -74,6 +70,7 @@ const onLoad = (e: ProgressEvent<FileReader>) => {
 };
 
 const handlePhoto = async () => {
+  $q.loading.show();
   const fileInput: HTMLInputElement | null =
     document.querySelector('input[type=file]');
 
@@ -85,7 +82,9 @@ const handlePhoto = async () => {
     reader.addEventListener('load', onLoad);
     reader.readAsArrayBuffer(file as Blob);
     detectedEmotions.value = sortBy(emotions, ['percentage']).reverse();
+    $q.loading.hide();
   }
+  $q.loading.hide();
 };
 </script>
 
@@ -95,8 +94,13 @@ const handlePhoto = async () => {
 }
 
 img {
-  cursor: pointer;
-  width: 80%;
+  width: 90%;
   border-radius: 1em;
+}
+
+@media (max-width: 1023px) {
+  img {
+    width: 350px;
+  }
 }
 </style>

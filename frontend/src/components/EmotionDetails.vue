@@ -1,10 +1,13 @@
 <template>
   <div
     class="emotion-card column items-center bg-accent q-pa-md"
-    style="width: 100%"
+    style="width: 22.5em"
   >
+    <p class="text-white text-weight-bold q-ma-none text-h4">
+      {{ emotion }}
+    </p>
     <p class="text-white text-weight-light q-ma-none text-h4">
-      {{ emotion }} - {{ percentage }}%
+      {{ percentage }}%
     </p>
   </div>
 </template>
