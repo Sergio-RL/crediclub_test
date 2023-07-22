@@ -57,16 +57,20 @@ const uploadPhoto = async (file: File) => {
       'Content-Type': 'multipart/form-data',
     },
   });
+
   return res.data.emotions as EmotionDetailsProps[];
 };
 
 const onLoad = (e: ProgressEvent<FileReader>) => {
   const result = e?.target?.result as ArrayBuffer;
-  photo.value = window.URL.createObjectURL(
-    new Blob([new Uint8Array(result)], {
-      type: 'image/jpg',
-    })
-  );
+  if (!!detectedEmotions.value.length) {
+    photo.value = window.URL.createObjectURL(
+      new Blob([new Uint8Array(result)], { type: 'image/jpg' })
+    );
+  } else {
+    $q.dialog({ message: 'La imagen debe ser de una persona.' });
+    photo.value = '';
+  }
 };
 
 const handlePhoto = async () => {
@@ -80,8 +84,8 @@ const handlePhoto = async () => {
     const reader = new FileReader();
 
     reader.addEventListener('load', onLoad);
-    reader.readAsArrayBuffer(file as Blob);
     detectedEmotions.value = sortBy(emotions, ['percentage']).reverse();
+    reader.readAsArrayBuffer(file as Blob);
     $q.loading.hide();
   }
   $q.loading.hide();

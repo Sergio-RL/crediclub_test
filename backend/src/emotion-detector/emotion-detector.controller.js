@@ -13,16 +13,17 @@ class EmotionDetectorController {
     const detectedEmotions = await this.emotionDetectorService.uploadFile(
       photoPath
     );
-    const emotions = Object.entries(detectedEmotions).map(([key, value]) => ({
+    const emotions = this.sortEmotions(detectedEmotions);
+    res.send({ emotions });
+  }
+
+  sortEmotions(allEmotions) {
+    const emotions = Object.entries(allEmotions).map(([key, value]) => ({
       emotion: translatedEmotions[key],
       percentage: value,
     }));
-
-    const [first, second, third, ...rest] = sortBy(emotions, [
-      "percentage",
-    ]).reverse();
-
-    res.send({ emotions: [first, second, third] });
+    const topEmotions = sortBy(emotions, ["percentage"]).reverse();
+    return topEmotions.filter((_, i) => i < 3);
   }
 }
 

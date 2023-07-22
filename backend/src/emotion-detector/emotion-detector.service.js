@@ -1,7 +1,6 @@
 import { readFile as rf, readFileSync } from "fs";
 import { promisify } from "util";
 import axios from "axios";
-import { sortBy } from "lodash";
 
 class EmotionDetectorService {
   url = "https://api-us.faceplusplus.com/facepp/v3/detect";
@@ -24,7 +23,6 @@ class EmotionDetectorService {
       const response = await axios.post(this.url, formdata);
       return response.data.faces[0].attributes.emotion;
     } catch (error) {
-      console.log(error);
       return [];
     }
   }
