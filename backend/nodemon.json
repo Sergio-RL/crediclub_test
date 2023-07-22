@@ -1,5 +1,5 @@
 {
-    "exec": "babel-node src/index.js",
-    "ignore": ["node_modules/"],
-    "ext": "js"
+  "exec": "babel-node -r dotenv/config src/index.js",
+  "ignore": ["node_modules/"],
+  "ext": "js"
 }

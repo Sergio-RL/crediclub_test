@@ -52,7 +52,7 @@ const onClickImg = () => {
 const uploadPhoto = async (file: File) => {
   const formData = new FormData();
   formData.append('photo', file);
-  const res: AxiosResponse = await api.post('cognitive/file', formData, {
+  const res: AxiosResponse = await api.post('emotion-detector/file', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
