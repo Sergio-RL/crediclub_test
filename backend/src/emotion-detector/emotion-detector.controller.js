@@ -1,4 +1,4 @@
-import { sortBy } from "lodash";
+import { orderBy } from "lodash";
 import { translatedEmotions } from "./constants";
 import EmotionDetectorService from "./emotion-detector.service";
 
@@ -10,10 +10,8 @@ class EmotionDetectorController {
 
   async uploadFile(req, res) {
     const photoPath = req.file.path;
-    const detectedEmotions = await this.emotionDetectorService.uploadFile(
-      photoPath
-    );
-    const emotions = this.sortEmotions(detectedEmotions);
+    const allEmotions = await this.emotionDetectorService.uploadFile(photoPath);
+    const emotions = this.sortEmotions(allEmotions);
     res.send({ emotions });
   }
 
@@ -22,8 +20,8 @@ class EmotionDetectorController {
       emotion: translatedEmotions[key],
       percentage: value,
     }));
-    const topEmotions = sortBy(emotions, ["percentage"]).reverse();
-    return topEmotions.filter((_, i) => i < 3);
+    const orderedEmotions = orderBy(emotions, ["percentage"], ["desc"]);
+    return orderedEmotions.filter((_, i) => i < 3);
   }
 }
 

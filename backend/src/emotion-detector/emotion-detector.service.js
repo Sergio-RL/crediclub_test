@@ -11,20 +11,28 @@ class EmotionDetectorService {
 
   async uploadFile(photoPath) {
     try {
-      const photo = await this.readFile(photoPath);
-      const photoInBase64 = photo.toString("base64");
-      const formdata = new FormData();
+      const photo = await this.getPhotoInBase64(photoPath);
+      const formdata = this.generateFormData(photo);
+      const { data } = await axios.post(this.url, formdata);
 
-      formdata.append("api_key", process.env.API_KEY);
-      formdata.append("api_secret", process.env.API_SECRET);
-      formdata.append("return_attributes", "emotion");
-      formdata.append("image_base64", photoInBase64);
-
-      const response = await axios.post(this.url, formdata);
-      return response.data.faces[0].attributes.emotion;
+      return data.faces[0].attributes.emotion;
     } catch (error) {
       return [];
     }
+  }
+
+  generateFormData(photo) {
+    const formdata = new FormData();
+    formdata.append("api_key", process.env.API_KEY);
+    formdata.append("api_secret", process.env.API_SECRET);
+    formdata.append("return_attributes", "emotion");
+    formdata.append("image_base64", photo);
+    return formdata;
+  }
+
+  async getPhotoInBase64(photoPath) {
+    const photo = await this.readFile(photoPath);
+    return photo.toString("base64");
   }
 }
 

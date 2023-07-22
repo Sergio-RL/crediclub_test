@@ -68,7 +68,7 @@ const onLoad = (e: ProgressEvent<FileReader>) => {
       new Blob([new Uint8Array(result)], { type: 'image/jpg' })
     );
   } else {
-    $q.dialog({ message: 'La imagen debe ser de una persona.' });
+    $q.dialog({ message: 'La imagen debe contener el rostro de una persona.' });
     photo.value = '';
   }
 };
